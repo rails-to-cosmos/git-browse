@@ -22,17 +22,13 @@
 (require 'simple)
 (require 's)
 
-(let ((remote "github"))
-  )
-
-
-(defun -git-browse-remote-to-url (remote)
+(defun -git-browse-remote-to-https (remote)
   "Convert REMOTE url string to https url."
   (if (string-prefix-p "git@" remote)
-      (-git-browse-ssh-to-url remote)
-    (-git-browse-http-to-url remote)))
+      (-git-browse-ssh-remote-to-https remote)
+    (-git-browse-http-remote-to-https remote)))
 
-(defun -git-browse-ssh-to-url (remote)
+(defun -git-browse-ssh-remote-to-https (remote)
   (let ((replacements
          (pcase remote
            ((guard (s-contains? "github" remote)) '((".git" . "")
@@ -43,7 +39,7 @@
                                                     (":" . "/"))))))
     (s-replace-all replacements remote)))
 
-(defun -git-browse-http-to-url (remote)
+(defun -git-browse-http-remote-to-https (remote)
   (->> remote-url
        (replace-regexp-in-string "^\\(git\\|https?\\)://" "https://")
        (s-replace "\\.git$" "")))
@@ -56,7 +52,7 @@
          (remote-url (string-trim (shell-command-to-string "git config --get remote.origin.url")))
          (branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
          (line (line-number-at-pos))
-         (base-url (-git-browse-remote-to-url remote-url)))
+         (base-url (-git-browse-remote-to-https remote-url)))
     (browse-url (format "%s/blob/%s/%s#L%d" base-url branch relative-path line))))
 
 (provide 'git-browse)
