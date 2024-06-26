@@ -22,6 +22,10 @@
 (require 'simple)
 (require 's)
 
+(let ((remote "github"))
+  )
+
+
 (defun -git-browse-remote-to-url (remote)
   "Convert REMOTE url string to https url."
   (if (string-prefix-p "git@" remote)
@@ -29,7 +33,15 @@
     (-git-browse-http-to-url remote)))
 
 (defun -git-browse-ssh-to-url (remote)
-  (s-replace-all '((".git" . "/-") ("git@" . "https://") (":" . "/")) remote))
+  (let ((replacements
+         (pcase remote
+           ((guard (s-contains? "github" remote)) '((".git" . "")
+                                                    ("git@" . "https://")
+                                                    (":" . "/")))
+           ((guard (s-contains? "gitlab" remote)) '((".git" . "/-")
+                                                    ("git@" . "https://")
+                                                    (":" . "/"))))))
+    (s-replace-all replacements remote)))
 
 (defun -git-browse-http-to-url (remote)
   (->> remote-url
