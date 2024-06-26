@@ -8,6 +8,13 @@
 ;; Package-Version: 1.0.0
 ;; Package-Requires: (
 ;;     (emacs "26.1")
+
+;;; Commentary:
+
+;; git-browse provides an interactive function `git-browse-current-line` that
+;; allows users to quickly browse the current file and line in their preferred
+;; Git management website (e.g., GitHub, GitLab, etc.).
+
 ;;; Code:
 
 (require 'browse-url)
