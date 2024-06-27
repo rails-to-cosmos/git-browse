@@ -47,7 +47,8 @@
 (defun git-browse-current-line ()
   "Browse the current line in remote web ui."
   (interactive)
-  (let* ((repo-root (locate-dominating-file default-directory ".git"))
+  (let* ((repo-root (or (locate-dominating-file default-directory ".git")
+                        (user-error "The current file is not located inside a Git repository.")))
          (relative-path (file-relative-name buffer-file-name repo-root))
          (remote-url (string-trim (shell-command-to-string "git config --get remote.origin.url")))
          (branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
